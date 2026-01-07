@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="환율 계산기 - 원화와 달러, 엔화, 유로 등 주요 통화 간 환율을 쉽게 계산하세요">
+    <meta name="keywords" content="환율계산기, 달러환율, 엔화환율, 유로환율, 원화환전, 환율조회">
+    <title>환율 계산기 - 원화 외화 환전 계산</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>💰 금융 계산기</h1>
+            <p class="subtitle">쉽고 빠른 금융 계산 도구</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="../index.html">홈</a></li>
+                <li><a href="loan.html">대출 계산기</a></li>
+                <li><a href="savings.html">적금 계산기</a></li>
+                <li><a href="investment.html">투자 계산기</a></li>
+                <li><a href="retirement.html">퇴직금 계산기</a></li>
+                <li><a href="exchange.html" class="active">환율 계산기</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <!-- Google AdSense 광고 위치 -->
+            <!-- <div class="ad-container">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                     data-ad-slot="XXXXXXXXXX"
+                     data-ad-format="auto"></ins>
+            </div> -->
+
+            <section class="calculator-section">
+                <h2>💱 환율 계산기</h2>
+                <p class="description">원화와 주요 외화 간 환전 금액을 계산합니다</p>
+
+                <div class="calculator-container">
+                    <div class="input-section">
+                        <div class="exchange-converter">
+                            <div class="currency-input-group">
+                                <label>보내는 금액</label>
+                                <div class="currency-input-wrapper">
+                                    <input type="number" id="fromAmount" placeholder="0" value="1000000" min="0" step="1000" oninput="calculateExchange('from')">
+                                    <select id="fromCurrency" onchange="updateExchangeRate()">
+                                        <option value="KRW">KRW (원)</option>
+                                        <option value="USD">USD (달러)</option>
+                                        <option value="JPY">JPY (엔)</option>
+                                        <option value="EUR">EUR (유로)</option>
+                                        <option value="CNY">CNY (위안)</option>
+                                        <option value="GBP">GBP (파운드)</option>
+                                        <option value="HKD">HKD (홍콩달러)</option>
+                                        <option value="AUD">AUD (호주달러)</option>
+                                        <option value="CAD">CAD (캐나다달러)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="exchange-swap">
+                                <button onclick="swapCurrencies()" class="btn-swap">⇅</button>
+                            </div>
+
+                            <div class="currency-input-group">
+                                <label>받는 금액</label>
+                                <div class="currency-input-wrapper">
+                                    <input type="number" id="toAmount" placeholder="0" value="0" min="0" step="1" oninput="calculateExchange('to')">
+                                    <select id="toCurrency" onchange="updateExchangeRate()">
+                                        <option value="KRW">KRW (원)</option>
+                                        <option value="USD" selected>USD (달러)</option>
+                                        <option value="JPY">JPY (엔)</option>
+                                        <option value="EUR">EUR (유로)</option>
+                                        <option value="CNY">CNY (위안)</option>
+                                        <option value="GBP">GBP (파운드)</option>
+                                        <option value="HKD">HKD (홍콩달러)</option>
+                                        <option value="AUD">AUD (호주달러)</option>
+                                        <option value="CAD">CAD (캐나다달러)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="exchange-rate-info">
+                            <h4>💡 적용 환율 <span id="lastUpdateTime" style="font-size: 0.8rem; color: var(--text-secondary); font-weight: normal;"></span></h4>
+                            <div class="rate-display">
+                                <span id="rateDisplay">1 USD = 1,300 KRW</span>
+                                <button onclick="toggleCustomRate()" class="btn-edit">✏️ 수정</button>
+                            </div>
+                            <div id="customRateInput" style="display: none;">
+                                <label>환율 직접 입력 (1 <span id="baseCurrency">USD</span> = ? <span id="quoteCurrency">KRW</span>)</label>
+                                <input type="number" id="customRate" placeholder="예: 1300" step="0.01" oninput="applyCustomRate()">
+                                <small>원하는 환율을 입력하세요</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-section" id="resultSection" style="display: block;">
+                        <h3>📊 환전 내역</h3>
+
+                        <div class="exchange-summary">
+                            <div class="summary-row">
+                                <span>환전 금액</span>
+                                <span id="summaryFromAmount">-</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>적용 환율</span>
+                                <span id="summaryRate">-</span>
+                            </div>
+                            <div class="summary-row highlight">
+                                <span>받는 금액</span>
+                                <span id="summaryToAmount">-</span>
+                            </div>
+                        </div>
+
+                        <div class="info-box" style="margin-top: 2rem;">
+                            <h4>💡 환율 정보</h4>
+                            <p>위 환율은 참고용이며, 실제 은행 환율과 다를 수 있습니다. 환전 시 은행별 우대율 및 수수료를 확인하세요.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3>💡 주요 통화 기준 환율 (실시간)</h3>
+                    <div class="currency-table-wrapper">
+                        <table class="currency-table">
+                            <thead>
+                                <tr>
+                                    <th>통화</th>
+                                    <th>통화명</th>
+                                    <th>기준 환율 (1 단위)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ratesTableBody">
+                                <tr>
+                                    <td>🇺🇸 USD</td>
+                                    <td>미국 달러</td>
+                                    <td id="rate-USD">로딩중...</td>
+                                </tr>
+                                <tr>
+                                    <td>🇯🇵 JPY</td>
+                                    <td>일본 엔 (100엔)</td>
+                                    <td id="rate-JPY">로딩중...</td>
+                                </tr>
+                                <tr>
+                                    <td>🇪🇺 EUR</td>
+                                    <td>유럽 유로</td>
+                                    <td id="rate-EUR">로딩중...</td>
+                                </tr>
+                                <tr>
+                                    <td>🇨🇳 CNY</td>
+                                    <td>중국 위안</td>
+                                    <td id="rate-CNY">로딩중...</td>
+                                </tr>
+                                <tr>
+                                    <td>🇬🇧 GBP</td>
+                                    <td>영국 파운드</td>
+                                    <td id="rate-GBP">로딩중...</td>
+                                </tr>
+                                <tr>
+                                    <td>🇭🇰 HKD</td>
+                                    <td>홍콩 달러</td>
+                                    <td id="rate-HKD">로딩중...</td>
+                                </tr>
+                                <tr>
+                                    <td>🇦🇺 AUD</td>
+                                    <td>호주 달러</td>
+                                    <td id="rate-AUD">로딩중...</td>
+                                </tr>
+                                <tr>
+                                    <td>🇨🇦 CAD</td>
+                                    <td>캐나다 달러</td>
+                                    <td id="rate-CAD">로딩중...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p style="margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
+                        * 환율은 30분마다 자동 업데이트됩니다. 실제 은행 환율과 다를 수 있습니다.
+                    </p>
+                </div>
+
+                <div class="info-box">
+                    <h3>💡 환전 꿀팁</h3>
+                    <div class="info-content">
+                        <div class="info-item">
+                            <h4>환전 수수료 절약하기</h4>
+                            <ul>
+                                <li><strong>공항 환전소 피하기:</strong> 수수료가 가장 비쌉니다</li>
+                                <li><strong>은행 우대율 활용:</strong> 인터넷뱅킹 환전 시 30~90% 우대</li>
+                                <li><strong>환전 이벤트:</strong> 은행별 이벤트 기간 활용</li>
+                                <li><strong>달러 환전:</strong> 가장 환율이 좋고 수수료가 저렴</li>
+                            </ul>
+                        </div>
+                        <div class="info-item">
+                            <h4>환전 시 주의사항</h4>
+                            <ul>
+                                <li>큰 금액은 여러 은행 환율 비교 필수</li>
+                                <li>여행 2-3일 전 환율 확인하여 환전</li>
+                                <li>소액권 섞어서 환전하기 (현지 팁용)</li>
+                                <li>여행자 수표보다 현금/카드가 편리</li>
+                            </ul>
+                        </div>
+                        <div class="info-item">
+                            <h4>해외 송금 시</h4>
+                            <ul>
+                                <li>송금 전용 서비스(Wise, PayPal 등) 활용</li>
+                                <li>은행 송금보다 수수료 저렴</li>
+                                <li>중간 환율에 가까운 환율 적용</li>
+                                <li>소액은 카드 결제가 유리할 수 있음</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Google AdSense 광고 위치 -->
+            <!-- <div class="ad-container">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                     data-ad-slot="XXXXXXXXXX"
+                     data-ad-format="auto"></ins>
+            </div> -->
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 금융 계산기. 환율 정보는 참고용이며, 실제 환율과 차이가 있을 수 있습니다.</p>
+        </div>
+    </footer>
+
+    <script src="../js/calculator.js"></script>
+</body>
+</html>

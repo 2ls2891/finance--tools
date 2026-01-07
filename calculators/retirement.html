@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="퇴직금 계산기 - 근속 기간과 평균 임금으로 예상 퇴직금을 계산하세요">
+    <meta name="keywords" content="퇴직금계산기, 퇴직금, 근속년수, 평균임금, 퇴직금조회">
+    <title>퇴직금 계산기 - 예상 퇴직금 계산</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>💰 금융 계산기</h1>
+            <p class="subtitle">쉽고 빠른 금융 계산 도구</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="../index.html">홈</a></li>
+                <li><a href="loan.html">대출 계산기</a></li>
+                <li><a href="savings.html">적금 계산기</a></li>
+                <li><a href="investment.html">투자 계산기</a></li>
+                <li><a href="retirement.html" class="active">퇴직금 계산기</a></li>
+                            <li><a href="exchange.html">환율 계산기</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <!-- Google AdSense 광고 위치 -->
+            <!-- <div class="ad-container">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                     data-ad-slot="XXXXXXXXXX"
+                     data-ad-format="auto"></ins>
+            </div> -->
+
+            <section class="calculator-section">
+                <h2>💼 퇴직금 계산기</h2>
+                <p class="description">근속 기간과 평균 임금으로 예상 퇴직금을 계산합니다</p>
+
+                <div class="calculator-container">
+                    <div class="input-section">
+                        <div class="input-group">
+                            <label for="inputMethod">입력 방식</label>
+                            <select id="inputMethod" onchange="toggleInputMethod()">
+                                <option value="period">근속 기간 입력</option>
+                                <option value="date">입사일/퇴사일 입력</option>
+                            </select>
+                            <small>편한 방식을 선택하세요</small>
+                        </div>
+
+                        <!-- 근속 기간 입력 방식 -->
+                        <div id="periodInputs">
+                            <div class="input-group">
+                                <label for="yearsWorked">근속 년수</label>
+                                <input type="number" id="yearsWorked" placeholder="예: 5" value="5" min="0" max="100" step="1">
+                                <small>근무한 년수를 입력하세요</small>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="monthsWorked">근속 개월수</label>
+                                <input type="number" id="monthsWorked" placeholder="예: 6" value="6" min="0" max="11" step="1">
+                                <small>추가 근무한 개월수 (0~11)</small>
+                            </div>
+                        </div>
+
+                        <!-- 날짜 입력 방식 -->
+                        <div id="dateInputs" style="display: none;">
+                            <div class="input-group">
+                                <label for="startDate">입사일</label>
+                                <input type="date" id="startDate">
+                                <small>입사한 날짜를 선택하세요</small>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="endDate">퇴사일 (예정일)</label>
+                                <input type="date" id="endDate">
+                                <small>퇴사 (예정) 날짜를 선택하세요</small>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="averageMonthlyPay">월 평균 급여 (원)</label>
+                            <input type="number" id="averageMonthlyPay" placeholder="예: 3000000" value="3000000" min="0" step="100000">
+                            <small>최근 3개월 평균 급여 (세전 기준)</small>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="includeBonus">상여금 포함 여부</label>
+                            <select id="includeBonus">
+                                <option value="no">포함 안함</option>
+                                <option value="yes">포함함</option>
+                            </select>
+                            <small>최근 3개월 내 상여금이 있었다면 선택하세요</small>
+                        </div>
+
+                        <div id="bonusInput" style="display: none;">
+                            <div class="input-group">
+                                <label for="bonusAmount">3개월간 상여금 총액 (원)</label>
+                                <input type="number" id="bonusAmount" placeholder="예: 3000000" value="0" min="0" step="100000">
+                                <small>최근 3개월간 받은 상여금 총액</small>
+                            </div>
+                        </div>
+
+                        <button class="btn-calculate" onclick="calculateRetirement()">계산하기</button>
+                    </div>
+
+                    <div class="result-section" id="resultSection" style="display: none;">
+                        <h3>💡 계산 결과</h3>
+
+                        <div class="result-cards">
+                            <div class="result-card highlight">
+                                <div class="result-label">예상 퇴직금 (세전)</div>
+                                <div class="result-value" id="totalRetirement">-</div>
+                            </div>
+
+                            <div class="result-card">
+                                <div class="result-label">예상 퇴직금 (세후)</div>
+                                <div class="result-value" id="afterTaxRetirement">-</div>
+                            </div>
+
+                            <div class="result-card">
+                                <div class="result-label">퇴직소득세</div>
+                                <div class="result-value" id="retirementTax">-</div>
+                            </div>
+                        </div>
+
+                        <div class="result-details">
+                            <h4>📊 상세 정보</h4>
+                            <table class="info-table">
+                                <tr>
+                                    <th>총 근속 기간</th>
+                                    <td id="totalPeriod">-</td>
+                                </tr>
+                                <tr>
+                                    <th>총 근속 일수</th>
+                                    <td id="totalDays">-</td>
+                                </tr>
+                                <tr>
+                                    <th>1일 평균 임금</th>
+                                    <td id="dailyPay">-</td>
+                                </tr>
+                                <tr>
+                                    <th>30일분 평균 임금</th>
+                                    <td id="thirtyDaysPay">-</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="info-box" style="margin-top: 2rem;">
+                            <h4>💡 퇴직소득세 안내</h4>
+                            <p>실제 퇴직소득세는 근속연수, 퇴직금액 등에 따라 달라지며, 위 계산은 간단한 예상치입니다. 정확한 세액은 국세청 퇴직소득세 계산기를 이용하세요.</p>
+                            <ul>
+                                <li>5년 이하: 약 3~5% 세율</li>
+                                <li>10년: 약 5~7% 세율</li>
+                                <li>20년 이상: 약 7~10% 세율</li>
+                                            <li><a href="exchange.html">환율 계산기</a></li>
+            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3>💡 퇴직금 제도 안내</h3>
+                    <div class="info-content">
+                        <div class="info-item">
+                            <h4>퇴직금이란?</h4>
+                            <p>근로자퇴직급여보장법에 따라 계속 근로기간 1년에 대해 30일분 이상의 평균임금을 퇴직금으로 지급하는 제도입니다.</p>
+                            <ul>
+                                <li>근속 1년 이상 근로자에게 지급</li>
+                                <li>주 15시간 이상 근무하는 모든 근로자 대상</li>
+                                <li>계약직, 아르바이트도 조건 충족 시 대상</li>
+                                            <li><a href="exchange.html">환율 계산기</a></li>
+            </ul>
+                        </div>
+                        <div class="info-item">
+                            <h4>퇴직금 계산 방법</h4>
+                            <p>퇴직금 = (1일 평균임금 × 30일) × (재직일수 ÷ 365)</p>
+                            <ul>
+                                <li>1일 평균임금: 퇴직 전 3개월 급여 총액 ÷ 3개월 총 일수</li>
+                                <li>급여에는 기본급, 상여금, 수당 등이 포함됩니다</li>
+                                <li>간단 계산: 월평균급여 × 근속년수</li>
+                                            <li><a href="exchange.html">환율 계산기</a></li>
+            </ul>
+                        </div>
+                        <div class="info-item">
+                            <h4>퇴직연금 (DC형/DB형)</h4>
+                            <p>퇴직금 대신 퇴직연금 제도를 운영하는 회사도 많습니다.</p>
+                            <ul>
+                                <li><strong>확정급여형(DB):</strong> 회사가 운용, 퇴직 시 정해진 금액 지급</li>
+                                <li><strong>확정기여형(DC):</strong> 본인이 운용, 운용 결과에 따라 수령액 변동</li>
+                                <li>IRP 계좌로 이전하면 세제 혜택 가능</li>
+                                            <li><a href="exchange.html">환율 계산기</a></li>
+            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3>📌 퇴직금 관련 꿀팁</h3>
+                    <div class="info-content">
+                        <div class="info-item">
+                            <h4>퇴직금 중간정산</h4>
+                            <p>2012년 7월 이후 원칙적으로 금지되었으나, 일부 법정 사유(무주택자 주택구입, 6개월 이상 요양 등)에 한해 가능합니다.</p>
+                        </div>
+                        <div class="info-item">
+                            <h4>퇴직 시 체크리스트</h4>
+                            <ul>
+                                <li>퇴직금 지급일: 퇴직일로부터 14일 이내</li>
+                                <li>퇴직소득원천징수영수증 수령 필수</li>
+                                <li>IRP 계좌 개설 후 이전하면 세금 혜택</li>
+                                <li>55세 이후 연금으로 수령 시 세금 절약 가능</li>
+                                            <li><a href="exchange.html">환율 계산기</a></li>
+            </ul>
+                        </div>
+                        <div class="info-item">
+                            <h4>퇴직금 미지급 시 대응</h4>
+                            <p>퇴직금을 받지 못한 경우 고용노동부 진정, 소액사건심판, 민사소송 등을 통해 청구할 수 있습니다. 3년 이내 청구해야 합니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Google AdSense 광고 위치 -->
+            <!-- <div class="ad-container">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                     data-ad-slot="XXXXXXXXXX"
+                     data-ad-format="auto"></ins>
+            </div> -->
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 금융 계산기. 모든 계산 결과는 참고용이며, 실제 퇴직금과 차이가 있을 수 있습니다.</p>
+        </div>
+    </footer>
+
+    <script src="../js/calculator.js"></script>
+</body>
+</html>
