@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="부가세 계산기 - 공급가액과 부가세를 쉽게 계산하세요. 세금계산서 발행 시 필수!">
+    <meta name="keywords" content="부가세계산기, 부가세, 공급가액, 세금계산서, VAT, 부가가치세">
+    <title>부가세 계산기 - 공급가액 및 부가세 계산</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3804582561986503"
+     crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>💰 금융 계산기</h1>
+            <p class="subtitle">쉽고 빠른 금융 계산 도구</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="../index.html">홈</a></li>
+                <li><a href="loan.html">대출 계산기</a></li>
+                <li><a href="savings.html">적금 계산기</a></li>
+                <li><a href="investment.html">투자 계산기</a></li>
+                <li><a href="retirement.html">퇴직금 계산기</a></li>
+                <li><a href="exchange.html">환율 계산기</a></li>
+                <li><a href="vat.html" class="active">부가세 계산기</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <section class="calculator-section">
+                <h2>부가세 계산기</h2>
+                <p class="description">공급가액에서 부가세를 계산하거나, 부가세 포함 금액에서 공급가액과 부가세를 분리합니다.</p>
+
+                <div class="calculator-box">
+                    <div class="input-group">
+                        <label>계산 방식</label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="calcType" value="add" checked onchange="switchCalcType()">
+                                <span>부가세 계산 (공급가액 → 부가세 포함)</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="calcType" value="remove" onchange="switchCalcType()">
+                                <span>부가세 분리 (부가세 포함 → 공급가액 + 부가세)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="addVatSection">
+                        <div class="input-group">
+                            <label for="supplyPrice">공급가액</label>
+                            <input type="number" id="supplyPrice" placeholder="예: 100000" min="0" step="1">
+                            <span class="unit">원</span>
+                        </div>
+                    </div>
+
+                    <div id="removeVatSection" style="display: none;">
+                        <div class="input-group">
+                            <label for="totalPrice">부가세 포함 금액</label>
+                            <input type="number" id="totalPrice" placeholder="예: 110000" min="0" step="1">
+                            <span class="unit">원</span>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary" onclick="calculateVAT()">계산하기</button>
+                </div>
+
+                <div id="result" class="result-box" style="display: none;">
+                    <h3>계산 결과</h3>
+                    <div class="result-item">
+                        <span class="result-label">공급가액</span>
+                        <span class="result-value" id="resultSupply">0원</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">부가세 (10%)</span>
+                        <span class="result-value" id="resultVat">0원</span>
+                    </div>
+                    <div class="result-item highlight">
+                        <span class="result-label">합계 (부가세 포함)</span>
+                        <span class="result-value" id="resultTotal">0원</span>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3>💡 부가세란?</h3>
+                    <p>부가가치세(VAT)는 상품이나 서비스의 거래 과정에서 발생하는 부가가치에 대해 부과하는 세금입니다.</p>
+                    <ul>
+                        <li><strong>세율:</strong> 10% (한국 기준)</li>
+                        <li><strong>계산 방법:</strong> 공급가액 × 10%</li>
+                        <li><strong>납부 의무:</strong> 일반과세자 사업자</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h3>📋 사용 예시</h3>
+                    <p><strong>예시 1: 부가세 계산</strong></p>
+                    <ul>
+                        <li>공급가액: 100,000원</li>
+                        <li>부가세: 100,000원 × 10% = 10,000원</li>
+                        <li>부가세 포함 금액: 110,000원</li>
+                    </ul>
+                    <p style="margin-top: 20px;"><strong>예시 2: 부가세 분리</strong></p>
+                    <ul>
+                        <li>부가세 포함 금액: 110,000원</li>
+                        <li>공급가액: 110,000원 ÷ 1.1 = 100,000원</li>
+                        <li>부가세: 100,000원 × 10% = 10,000원</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h3>❓ 자주 묻는 질문</h3>
+                    <p><strong>Q. 모든 상품에 부가세가 붙나요?</strong></p>
+                    <p>A. 아니요. 기초 식료품, 의료 서비스, 교육 서비스 등 일부 품목은 면세입니다.</p>
+
+                    <p style="margin-top: 15px;"><strong>Q. 간이과세자도 부가세를 내나요?</strong></p>
+                    <p>A. 네, 간이과세자는 업종별로 0.5%~3%의 낮은 세율을 적용받습니다.</p>
+
+                    <p style="margin-top: 15px;"><strong>Q. 세금계산서는 언제 발행하나요?</strong></p>
+                    <p>A. 재화나 용역을 공급하는 시점에 발행해야 합니다.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 금융 계산기. 모든 계산 결과는 참고용이며, 실제 금융 상품과 차이가 있을 수 있습니다. | <a href="../privacy.html" style="color: white; text-decoration: underline;">개인정보처리방침</a> | <a href="../about.html" style="color: white; text-decoration: underline;">사이트 소개</a></p>
+        </div>
+    </footer>
+
+    <script>
+        function switchCalcType() {
+            const calcType = document.querySelector('input[name="calcType"]:checked').value;
+            const addSection = document.getElementById('addVatSection');
+            const removeSection = document.getElementById('removeVatSection');
+
+            if (calcType === 'add') {
+                addSection.style.display = 'block';
+                removeSection.style.display = 'none';
+            } else {
+                addSection.style.display = 'none';
+                removeSection.style.display = 'block';
+            }
+
+            // 결과 숨기기
+            document.getElementById('result').style.display = 'none';
+        }
+
+        function calculateVAT() {
+            const calcType = document.querySelector('input[name="calcType"]:checked').value;
+            let supply, vat, total;
+
+            if (calcType === 'add') {
+                // 공급가액에서 부가세 계산
+                supply = parseFloat(document.getElementById('supplyPrice').value) || 0;
+
+                if (supply <= 0) {
+                    alert('공급가액을 입력해주세요.');
+                    return;
+                }
+
+                vat = Math.round(supply * 0.1);
+                total = supply + vat;
+            } else {
+                // 부가세 포함 금액에서 분리
+                total = parseFloat(document.getElementById('totalPrice').value) || 0;
+
+                if (total <= 0) {
+                    alert('부가세 포함 금액을 입력해주세요.');
+                    return;
+                }
+
+                supply = Math.round(total / 1.1);
+                vat = total - supply;
+            }
+
+            // 결과 표시
+            document.getElementById('resultSupply').textContent = supply.toLocaleString() + '원';
+            document.getElementById('resultVat').textContent = vat.toLocaleString() + '원';
+            document.getElementById('resultTotal').textContent = total.toLocaleString() + '원';
+            document.getElementById('result').style.display = 'block';
+
+            // 결과로 스크롤
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Enter 키 이벤트
+        document.getElementById('supplyPrice').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') calculateVAT();
+        });
+        document.getElementById('totalPrice').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') calculateVAT();
+        });
+    </script>
+</body>
+</html>
